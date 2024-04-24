@@ -19,11 +19,14 @@ It uses up the MVC architecture for easy adoption.
 2. Create a repository with requried fields.
 3. Clone the repository.
 4. Install Dependencies.
+
 ```sh
 yarn
 ```
+
 5. Create a `.env.local` file and add all the environment variables as mentioned in the [`.env.example`](/.env.example) file.
 6. Start development server.
+
 ```sh
 yarn dev
 ```
@@ -35,4 +38,3 @@ yarn dev
 # Author
 
 [Akshat Mittal](https://akshatmittal61.vercel.app)
-
