@@ -1,0 +1,23 @@
+{
+  "name": "node-ts-server-template",
+  "version": "1.0.0",
+  "description": "Basic template for backend server using typescript",
+  "main": "server.ts",
+  "repository": "https://github.com/akshatmittal61/node-ts-server-template.git",
+  "author": "Akshat Mittal <akshatmittal2506@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.12.7",
+    "nodemon": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  },
+  "scripts": {
+    "dev": "nodemon server.ts"
+  }
+}
