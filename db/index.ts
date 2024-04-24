@@ -1,5 +1,6 @@
-import { dbUri } from "../config";
 import mongoose from "mongoose";
+import { dbUri } from "../config";
+import log from "../log";
 
 declare global {
 	// eslint-disable-next-line no-unused-vars
@@ -11,18 +12,18 @@ export class DatabaseManager {
 
 	public async connect() {
 		if (global.isConnected) {
-			console.info("Using existing database connection");
+			log.info("Using existing database connection");
 			return;
 		}
 
 		const db = await mongoose
 			.connect(dbUri)
 			.then((db) => {
-				console.info("Connected to MongoDB");
+				log.info("Connected to MongoDB");
 				return db;
 			})
 			.catch((err) => {
-				console.error("Error connecting to MongoDB", err);
+				log.error(`Error connecting to MongoDB: ${err}`);
 				return err;
 			});
 

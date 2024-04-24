@@ -1,6 +1,7 @@
-import { http } from "../constants/enum";
-import services from "../services";
 import { Request, Response } from "express";
+import { http } from "../constants/enum";
+import log from "../log";
+import services from "../services";
 
 export const getAllBlogs = async (_: Request, res: Response) => {
 	try {
@@ -8,8 +9,8 @@ export const getAllBlogs = async (_: Request, res: Response) => {
 		return res
 			.status(http.status.SUCCESS)
 			.json({ message: http.message.SUCCESS, data: allBlogs });
-	} catch (error) {
-		console.error(error);
+	} catch (error: any) {
+		log.error(error);
 		return res
 			.status(http.status.INTERNAL_SERVER_ERROR)
 			.json({ message: http.message.INTERNAL_SERVER_ERROR });
