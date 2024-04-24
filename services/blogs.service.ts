@@ -31,6 +31,15 @@ export const find = async (
 	return null;
 };
 
+export const findAll = async (): Promise<Array<Blog>> => {
+	const res = await models.Blog.find({});
+	const parsedRes = res
+		.map((blog) => getObjectFromMongoResponse<Blog>(blog))
+		.filter((blog) => blog !== null) as Blog[];
+	if (parsedRes.length > 0) return parsedRes;
+	return [];
+};
+
 export const create = async (
 	blog: Omit<Blog, "id" | "createdAt" | "updatedAt">
 ): Promise<Blog> => {

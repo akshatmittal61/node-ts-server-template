@@ -2,7 +2,7 @@ export type Blog = {
 	id: string;
 	title: string;
 	content: string;
-	likes: number;
+	likes?: number;
 	createdAt: string;
 	updatedAt: string;
 };
