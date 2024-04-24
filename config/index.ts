@@ -60,3 +60,5 @@ const configService = new ConfigService(process.env);
 export default configService;
 
 export const PORT = configService.getNumber("PORT");
+
+export const dbUri = configService.get("DB_URI");
