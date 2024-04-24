@@ -1,6 +1,7 @@
 import models from "../models";
 import { Blog } from "../types/blog";
 import { getObjectFromMongoResponse } from "../utils/parser";
+import { getNonNullValue } from "../utils/safety";
 
 export const findOne = async (query: Partial<Blog>): Promise<Blog | null> => {
 	const res = await models.Blog.findOne(query);
@@ -34,7 +35,7 @@ export const create = async (
 	blog: Omit<Blog, "id" | "createdAt" | "updatedAt">
 ): Promise<Blog> => {
 	const res = await models.Blog.create(blog);
-	return getObjectFromMongoResponse<Blog>(res) as Blog;
+	return getNonNullValue(getObjectFromMongoResponse<Blog>(res));
 };
 
 export const update = async (
