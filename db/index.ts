@@ -1,34 +1,109 @@
 import mongoose from "mongoose";
 import { dbUri } from "../config";
-import log from "../log";
+import { logger } from "../log";
 
 declare global {
-	// eslint-disable-next-line no-unused-vars
-	var isConnected: boolean;
+	// eslint-disable-next-line no-var
+	var mongoose: {
+		conn: typeof import("mongoose") | null;
+		promise: Promise<typeof import("mongoose")> | null;
+	};
 }
+
+global.mongoose = global.mongoose || {
+	conn: null,
+	promise: null,
+};
 
 export class DatabaseManager {
-	constructor() {}
+	private static ping(): boolean {
+		try {
+			if (
+				!global.mongoose.conn ||
+				!global.mongoose.conn.connection.db ||
+				global.mongoose.conn.connections[0].readyState !== 1
+			) {
+				logger.info("MongoDB is not connected");
+				DatabaseManager.connect();
+				return false;
+			}
+			global.mongoose.conn.connection.db.command({ ping: 1 });
+			logger.info("MongoDB ping succeeded");
+			return true;
+		} catch {
+			logger.info("MongoDB ping failed");
+			return false;
+		}
+	}
 
-	public async connect() {
-		if (global.isConnected) {
-			log.info("Using existing database connection");
-			return;
+	public static async connect() {
+		if (
+			global.mongoose.conn &&
+			global.mongoose.conn.connection.db &&
+			global.mongoose.conn.connections[0].readyState === 1
+		) {
+			logger.info("MongoDB is already connected");
+			return global.mongoose.conn;
 		}
 
-		const db = await mongoose
-			.connect(dbUri)
-			.then((db) => {
-				log.info("Connected to MongoDB");
-				return db;
-			})
-			.catch((err) => {
-				log.error(`Error connecting to MongoDB: ${err}`);
-				return err;
-			});
+		if (!global.mongoose.promise || !global.mongoose.conn) {
+			try {
+				mongoose.set("strictQuery", true);
+				global.mongoose.promise = mongoose.connect(dbUri, {
+					heartbeatFrequencyMS: 10000,
+				});
+				logger.debug("Connecting to MongoDB");
+				global.mongoose.conn = await global.mongoose.promise;
+				if (global.mongoose.conn.connections[0].readyState != 1) {
+					await new Promise<void>((resolve) => {
+						mongoose.connection.once("connected", () => {
+							logger.info("MongoDB connected in cb");
+							resolve();
+						});
+						mongoose.connection.on("error", (error: any) => {
+							logger.error(
+								"Error connecting to MongoDB in cb",
+								error.message
+							);
+							resolve();
+						});
+					});
+				}
+				logger.info("MongoDB connected");
+				return global.mongoose.conn;
+			} catch (error: any) {
+				logger.error(
+					"Error connecting to MongoDB in connect",
+					error.message
+				);
+				global.mongoose.conn = null;
+				global.mongoose.promise = null;
+				return null;
+			}
+		}
+		return global.mongoose.conn;
+	}
 
-		global.isConnected = db.connections[0].readyState === 1;
+	public static async disconnect() {
+		if (!global.mongoose.conn) {
+			logger.info("MongoDB is already disconnected");
+			return;
+		}
+		logger.info("Disconnecting from MongoDB");
+		await mongoose.disconnect();
+		global.mongoose.conn = null;
+		global.mongoose.promise = null;
+		logger.info("MongoDB disconnected");
+	}
+
+	public static isReady() {
+		return DatabaseManager.ping();
+	}
+
+	public static status() {
+		if (!global.mongoose.conn || !global.mongoose.conn.connection.db) {
+			return false;
+		}
+		return true;
 	}
 }
-
-export const db = new DatabaseManager();

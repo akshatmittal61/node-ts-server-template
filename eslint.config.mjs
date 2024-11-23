@@ -1,7 +1,16 @@
+import pluginJs from "@eslint/js";
+import globals from "globals";
+import tseslint from "typescript-eslint";
+
 export default [
 	{
+		languageOptions: { globals: globals.browser },
+	},
+	pluginJs.configs.recommended,
+	...tseslint.configs.recommended,
+	{
 		rules: {
-			"no-unused-vars": [
+			"@typescript-eslint/no-unused-vars": [
 				"warn",
 				{
 					args: "after-used",
@@ -11,9 +20,14 @@ export default [
 			"no-use-before-define": "error",
 			quotes: ["error", "double"],
 			semi: ["error", "always"],
+			"no-explicit-any": "off",
+			"@typescript-eslint/no-explicit-any": "off",
+			"no-console": "warn",
 		},
+	},
+	{
 		ignores: [
-			"/build/**",
+			"**/build/**/*",
 			"coverage/**",
 			"docs/**",
 			"!/docs/.eleventy.js",
