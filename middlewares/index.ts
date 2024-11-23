@@ -1,5 +1,3 @@
-import { isLoggedIn } from "./auth";
-
-const middlewares = { isLoggedIn };
-
-export default middlewares;
+export * from "./auth";
+export * from "./error";
+export * from "./server";

@@ -1,5 +1,2 @@
-import * as blogs from "./blogs.contorller";
-
-const controllers = { blogs };
-
-export default controllers;
+export * from "./blogs.controller";
+export * from "./server.controller";

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { USER_STATUS } from "../constants";
+import { User } from "../types";
 
 const UserSchema = new mongoose.Schema(
 	{
@@ -7,6 +8,15 @@ const UserSchema = new mongoose.Schema(
 			type: String,
 		},
 		email: {
+			type: String,
+			required: true,
+			unique: true,
+			index: {
+				unique: true,
+				sparse: true,
+			},
+		},
+		username: {
 			type: String,
 			required: true,
 			unique: true,
@@ -26,6 +36,4 @@ const UserSchema = new mongoose.Schema(
 	}
 );
 
-const User = mongoose.model("User", UserSchema);
-
-export default User;
+export const UserModel = mongoose.model<User>("User", UserSchema);

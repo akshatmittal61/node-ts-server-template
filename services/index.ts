@@ -1,5 +1,3 @@
-import * as blogs from "./blogs.service";
-
-const services = { blogs };
-
-export default services;
+export * from "./auth.service";
+export * from "./blogs.service";
+export * from "./user.service";

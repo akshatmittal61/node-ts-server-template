@@ -1,65 +1,81 @@
-import models from "../models";
-import { Blog } from "../types/blog";
-import { getObjectFromMongoResponse } from "../utils/parser";
-import { getNonNullValue } from "../utils/safety";
+import { cache, getCacheKey } from "../cache";
+import { BLOG_STATUS, cacheParameter, HTTP } from "../constants";
+import { ApiError } from "../errors";
+import { blogRepo } from "../repo";
+import { Blog, CreateModel, IBlog } from "../types";
+import { UserService } from "./user.service";
 
-export const findOne = async (query: Partial<Blog>): Promise<Blog | null> => {
-	const res = await models.Blog.findOne(query);
-	return getObjectFromMongoResponse<Blog>(res);
-};
-
-export const findById = async (id: string): Promise<Blog | null> => {
-	const res = await models.Blog.findById(id).catch((error: any) => {
-		if (error.kind === "ObjectId") return null;
-		return Promise.reject(error);
-	});
-	return getObjectFromMongoResponse<Blog>(res);
-};
-
-export const find = async (
-	query: Partial<Blog>
-): Promise<Blog | Blog[] | null> => {
-	const res = await models.Blog.find(query);
-	if (res.length > 1) {
-		const parsedRes = res
-			.map((blog) => getObjectFromMongoResponse<Blog>(blog))
-			.filter((blog) => blog !== null) as Blog[];
-		if (parsedRes.length > 0) return parsedRes;
-	} else if (res.length === 1) {
-		return getObjectFromMongoResponse<Blog>(res[0]);
+export class BlogService {
+	public static async getAllPublishedBlogs(): Promise<Array<IBlog>> {
+		return (await blogRepo.find({ status: BLOG_STATUS.PUBLISHED })) || [];
 	}
-	return null;
-};
-
-export const findAll = async (): Promise<Array<Blog>> => {
-	const res = await models.Blog.find({});
-	const parsedRes = res
-		.map((blog) => getObjectFromMongoResponse<Blog>(blog))
-		.filter((blog) => blog !== null) as Blog[];
-	if (parsedRes.length > 0) return parsedRes;
-	return [];
-};
-
-export const create = async (
-	blog: Omit<Blog, "id" | "createdAt" | "updatedAt">
-): Promise<Blog> => {
-	const res = await models.Blog.create(blog);
-	return getNonNullValue(getObjectFromMongoResponse<Blog>(res));
-};
-
-export const update = async (
-	query: Partial<Blog>,
-	update: Partial<Omit<Blog, "id" | "createdAt" | "updatedAt">>
-): Promise<Blog | null> => {
-	const res = query.id
-		? await models.Blog.findByIdAndUpdate(query.id, update, { new: true })
-		: await models.Blog.findOneAndUpdate(query, update, { new: true });
-	return getObjectFromMongoResponse<Blog>(res);
-};
-
-export const remove = async (query: Partial<Blog>): Promise<Blog | null> => {
-	const res = query.id
-		? await models.Blog.findByIdAndDelete(query.id)
-		: await models.Blog.findOneAndDelete(query);
-	return getObjectFromMongoResponse<Blog>(res);
-};
+	public static async getBlogById(id: string): Promise<IBlog | null> {
+		return await blogRepo.findById(id);
+	}
+	public static async getBlogBySlug(slug: string): Promise<IBlog | null> {
+		return await blogRepo.findOne({ slug });
+	}
+	public static async createBlog(body: CreateModel<Blog>): Promise<IBlog> {
+		const author = await UserService.getUserById(body.author);
+		if (!author) {
+			throw new ApiError(
+				HTTP.status.BAD_REQUEST,
+				"Author does not exist"
+			);
+		}
+		const isSlugInUse = await blogRepo.findOne({ slug: body.slug });
+		if (isSlugInUse) {
+			throw new ApiError(HTTP.status.CONFLICT, "Slug already in use");
+		}
+		return await blogRepo.create(body);
+	}
+	public static async updateBlog({
+		blogId,
+		currentUserId,
+		body,
+	}: {
+		blogId: string;
+		currentUserId: string;
+		body: Partial<Omit<Blog, "id" | "author">>;
+	}) {
+		const currentUser = await UserService.getUserById(currentUserId);
+		if (!currentUser) {
+			throw new ApiError(
+				HTTP.status.BAD_REQUEST,
+				"Author does not exist"
+			);
+		}
+		const foundBlog = await blogRepo.findById(blogId);
+		if (!foundBlog) {
+			throw new ApiError(HTTP.status.NOT_FOUND, "Blog not found");
+		}
+		if (foundBlog.author.id !== currentUserId) {
+			throw new ApiError(
+				HTTP.status.UNAUTHORIZED,
+				"You are not the author of this blog"
+			);
+		}
+		cache.invalidate(getCacheKey(cacheParameter.BLOG, { id: blogId }));
+		return await blogRepo.update({ id: blogId }, body);
+	}
+	public static async removeBlog({
+		blogId,
+		currentUserId,
+	}: {
+		blogId: string;
+		currentUserId: string;
+	}) {
+		const foundBlog = await blogRepo.findById(blogId);
+		if (!foundBlog) {
+			throw new ApiError(HTTP.status.NOT_FOUND, "Blog not found");
+		}
+		if (foundBlog.author.id !== currentUserId) {
+			throw new ApiError(
+				HTTP.status.UNAUTHORIZED,
+				"You are not the author of this blog"
+			);
+		}
+		cache.invalidate(getCacheKey(cacheParameter.BLOG, { id: blogId }));
+		return await blogRepo.remove({ id: blogId });
+	}
+}

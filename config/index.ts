@@ -73,3 +73,8 @@ export const PORT = configService.safeGet(
 );
 
 export const dbUri = configService.get("DB_URI");
+
+export const jwtSecret = configService.safeGet(
+	() => configService.get("JWT_SECRET"),
+	"secret"
+);

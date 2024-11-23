@@ -1,8 +1,11 @@
-import { Router } from "express";
-import blogs from "./blogs";
+import { BlogsController } from "../controllers";
+import { authenticatedRoute } from "../middlewares";
+import { router, wrapper } from "./base";
 
-const router = Router();
+router.get("/blogs", BlogsController.getAllBlogs);
+router.get("/:slug", BlogsController.getBlogBySlug);
+router.post("/blogs", authenticatedRoute, BlogsController.createBlog);
+router.patch("/blogs/:id", authenticatedRoute, BlogsController.updateBlog);
+router.delete("/blogs/:id", authenticatedRoute, BlogsController.removeBlog);
 
-router.use("/blogs", blogs);
-
-export default router;
+export const apiRouter = wrapper(router);

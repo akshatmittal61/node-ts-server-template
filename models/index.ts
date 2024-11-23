@@ -1,5 +1,2 @@
-import Blog from "./Blog.model";
-
-const models = { Blog };
-
-export default models;
+export * from "./Blog.model";
+export * from "./User.model";
