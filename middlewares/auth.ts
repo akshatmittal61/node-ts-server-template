@@ -1,20 +1,20 @@
-import { Request, Response } from "express";
-import { http } from "../constants/enum";
-import log from "../log";
+import { NextFunction, Request, Response } from "express";
+import { HTTP } from "../constants";
+import { logger } from "../log";
 
-export const isLoggedIn = (req: Request, res: Response, next: Function) => {
+export const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const token = req.headers.authorization?.split("Bearer ")[0];
 		if (!token) {
 			return res
-				.status(http.status.UNAUTHORIZED)
-				.json({ message: http.message.UNAUTHORIZED });
+				.status(HTTP.status.UNAUTHORIZED)
+				.json({ message: HTTP.message.UNAUTHORIZED });
 		}
 		next();
 	} catch (error: any) {
-		log.error(error);
+		logger.error(error);
 		return res
-			.status(http.status.UNAUTHORIZED)
-			.json({ message: http.message.UNAUTHORIZED });
+			.status(HTTP.status.UNAUTHORIZED)
+			.json({ message: HTTP.message.UNAUTHORIZED });
 	}
 };

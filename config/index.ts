@@ -67,6 +67,9 @@ const configService = new ConfigService(process.env);
 
 export default configService;
 
-export const PORT = configService.safeGet(() => configService.getNumber("PORT"), 8000);
+export const PORT = configService.safeGet(
+	() => configService.getNumber("PORT"),
+	8000
+);
 
 export const dbUri = configService.get("DB_URI");
