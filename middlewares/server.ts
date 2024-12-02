@@ -1,7 +1,7 @@
 import { default as corsMiddleware } from "cors";
 import { NextFunction } from "express";
+import { DatabaseManager } from "../connections";
 import { HTTP } from "../constants";
-import { DatabaseManager } from "../db";
 import { Logger } from "../log";
 import { ApiRequest, ApiResponse } from "../types";
 
@@ -27,14 +27,23 @@ export const cors = corsMiddleware({
 	origin: "*",
 });
 
-export const useDb = (_: ApiRequest, res: ApiResponse, next: NextFunction) => {
-	if (DatabaseManager.isReady() === false) {
-		return res
-			.status(HTTP.status.SERVICE_UNAVAILABLE)
-			.json({ message: HTTP.message.DB_CONNECTION_ERROR });
-	}
-	return next();
-};
+export const useDb =
+	(db: DatabaseManager) =>
+	(_: ApiRequest, res: ApiResponse, next: NextFunction) => {
+		if (db.isConnected() === false) {
+			Logger.error("Unable to connect to database");
+			return db.connect().then((isConnected) => {
+				if (isConnected) {
+					return next();
+				} else {
+					return res
+						.status(HTTP.status.SERVICE_UNAVAILABLE)
+						.json({ message: HTTP.message.DB_CONNECTION_ERROR });
+				}
+			});
+		}
+		return next();
+	};
 
 export const tracer = (req: ApiRequest, _: ApiResponse, next: NextFunction) => {
 	Logger.debug(req.method, req.path, req.params, req.body, req.headers);
