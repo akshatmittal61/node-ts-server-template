@@ -3,7 +3,7 @@ import { jwtSecret } from "../config";
 import { User } from "../types";
 import { genericParse, getNonEmptyString } from "../utils";
 import { UserService } from "./user.service";
-import { logger } from "../log";
+import { Logger } from "../log";
 
 export class AuthService {
 	public static async getAuthenticatedUser(
@@ -15,7 +15,7 @@ export class AuthService {
 			const foundUser = await UserService.getUserById(userId);
 			return foundUser;
 		} catch (error: any) {
-			logger.error(error.message);
+			Logger.error(error.message);
 			return null;
 		}
 	}

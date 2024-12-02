@@ -1,6 +1,6 @@
 import { NextFunction } from "express";
 import { HTTP } from "../constants";
-import { logger } from "../log";
+import { Logger } from "../log";
 import { AuthService } from "../services";
 import { ApiRequest, ApiResponse } from "../types";
 
@@ -22,11 +22,11 @@ export const authenticatedRoute = async (
 				.status(HTTP.status.UNAUTHORIZED)
 				.json({ message: "Please login to continue" });
 		}
-		logger.debug("loggedInUser", loggedInUser);
+		Logger.debug("loggedInUser", loggedInUser);
 		req.user = loggedInUser;
 		return next();
 	} catch (error: any) {
-		logger.error(error);
+		Logger.error(error);
 		return res
 			.status(HTTP.status.UNAUTHORIZED)
 			.json({ message: HTTP.message.UNAUTHORIZED });
