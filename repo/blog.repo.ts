@@ -80,4 +80,4 @@ class BlogRepo extends BaseRepo<Blog, IBlog> {
 	}
 }
 
-export const blogRepo = new BlogRepo();
+export const blogRepo = BlogRepo.getInstance<BlogRepo>();

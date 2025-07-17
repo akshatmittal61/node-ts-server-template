@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { USER_STATUS } from "../constants";
+import { USER_ROLE, USER_STATUS } from "../constants";
 
 export const UserSchema = new mongoose.Schema(
 	{
@@ -23,6 +23,11 @@ export const UserSchema = new mongoose.Schema(
 				unique: true,
 				sparse: true,
 			},
+		},
+		role: {
+			type: String,
+			enum: Object.values(USER_ROLE),
+			default: USER_ROLE.USER,
 		},
 		status: {
 			type: String,
