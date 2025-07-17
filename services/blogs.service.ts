@@ -1,4 +1,4 @@
-import { cache, getCacheKey } from "../cache";
+import { Cache } from "../cache";
 import { BLOG_STATUS, cacheParameter, HTTP } from "../constants";
 import { ApiError } from "../errors";
 import { blogRepo } from "../repo";
@@ -55,7 +55,7 @@ export class BlogService {
 				"You are not the author of this blog"
 			);
 		}
-		cache.invalidate(getCacheKey(cacheParameter.BLOG, { id: blogId }));
+		Cache.invalidate(Cache.getKey(cacheParameter.BLOG, { id: blogId }));
 		return await blogRepo.update({ id: blogId }, body);
 	}
 	public static async removeBlog({
@@ -75,7 +75,7 @@ export class BlogService {
 				"You are not the author of this blog"
 			);
 		}
-		cache.invalidate(getCacheKey(cacheParameter.BLOG, { id: blogId }));
+		Cache.invalidate(Cache.getKey(cacheParameter.BLOG, { id: blogId }));
 		return await blogRepo.remove({ id: blogId });
 	}
 }

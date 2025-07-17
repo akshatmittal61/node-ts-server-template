@@ -1,4 +1,4 @@
-import { cache, getCacheKey } from "../cache";
+import { Cache } from "../cache";
 import { cacheParameter, HTTP } from "../constants";
 import { ApiError } from "../errors";
 import { userRepo } from "../repo";
@@ -6,8 +6,8 @@ import { CreateModel, User } from "../types";
 
 export class UserService {
 	public static async getUserById(id: string): Promise<User | null> {
-		const cacheKey = getCacheKey(cacheParameter.USER, { id });
-		return await cache.fetch(cacheKey, () => userRepo.findById(id));
+		const cacheKey = Cache.getKey(cacheParameter.USER, { id });
+		return await Cache.fetch(cacheKey, () => userRepo.findById(id));
 	}
 	public static async findOrCreateUserByEmail(
 		email: string,
