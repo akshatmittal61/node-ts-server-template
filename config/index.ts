@@ -1,24 +1,12 @@
 import { T_NODE_ENV } from "../types";
-import { configService } from "./base";
+import { config } from "./base";
 
-export const service = configService.safeGet(
-	() => configService.get("SERVICE"),
-	"node-ts-server-template"
-);
+export const service = config.safeGet<string>("SERVICE", "template");
 
-export const PORT = configService.safeGet(
-	() => configService.getNumber("PORT"),
-	8000
-);
+export const PORT = config.safeGet<number>("PORT", 8000);
 
-export const dbUri = configService.get("DB_URI");
+export const dbUri = config.get("DB_URI");
 
-export const jwtSecret = configService.safeGet(
-	() => configService.get("JWT_SECRET"),
-	"secret"
-);
+export const jwtSecret = config.safeGet<string>("JWT_SECRET", "secret");
 
-export const nodeEnv = configService.safeGet(
-	() => configService.get("NODE_ENV") as T_NODE_ENV,
-	"development"
-);
+export const nodeEnv = config.safeGet<T_NODE_ENV>("NODE_ENV", "development");

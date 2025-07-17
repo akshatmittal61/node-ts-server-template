@@ -1,18 +1,17 @@
-import { config } from "dotenv";
-
-config();
+import { config as populate } from "dotenv";
 
 class ConfigService {
 	constructor(private env: { [k: string]: string | undefined }) {
 		this.env = env;
+		populate();
 	}
 
-	public get(key: string): string {
+	public get<T = string>(key: string): T {
 		if (!this.env[key]) {
 			throw new Error(`Key ${key} not found in environment`);
 		}
 
-		return this.env[key] as string;
+		return this.env[key] as T;
 	}
 
 	public getNumber(key: string): number {
@@ -54,13 +53,13 @@ class ConfigService {
 		}
 	}
 
-	public safeGet<T>(extractor: () => T, fallback: T): T {
+	public safeGet<T>(key: string, fallback: T): T {
 		try {
-			return extractor();
+			return this.get(key);
 		} catch {
 			return fallback;
 		}
 	}
 }
 
-export const configService = new ConfigService(process.env);
+export const config = new ConfigService(process.env);

@@ -25,7 +25,7 @@ export class Server {
 		this.instance = new HttpServer(this.app);
 	}
 
-	public bindMiddlewares() {
+	private bindMiddlewares() {
 		this.app.use(express.json());
 		this.app.use(express.urlencoded({ extended: true }));
 		this.app.use(tracer);
@@ -34,7 +34,7 @@ export class Server {
 		this.app.use(profiler);
 	}
 
-	public createRouter() {
+	private createRouter() {
 		this.app.get("/api/health", ServerController.health(this.container.db));
 		this.app.get(
 			"/api/heartbeat",
@@ -72,9 +72,5 @@ export class Server {
 	public async stop() {
 		await this.disconnectDb();
 		await new Promise((resolve) => this.instance.close(resolve));
-	}
-
-	public getApp() {
-		return this.app;
 	}
 }
