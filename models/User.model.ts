@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
 import { USER_STATUS } from "../constants";
-import { User } from "../types";
 
-const UserSchema = new mongoose.Schema(
+export const UserSchema = new mongoose.Schema(
 	{
 		name: {
 			type: String,
@@ -35,5 +34,3 @@ const UserSchema = new mongoose.Schema(
 		timestamps: true,
 	}
 );
-
-export const UserModel = mongoose.model<User>("User", UserSchema);

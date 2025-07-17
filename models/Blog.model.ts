@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
 import { BLOG_STATUS } from "../constants";
-import { Blog } from "../types";
 
-const BlogSchema = new mongoose.Schema(
+export const BlogSchema = new mongoose.Schema(
 	{
 		title: {
 			type: String,
@@ -36,5 +35,3 @@ const BlogSchema = new mongoose.Schema(
 		timestamps: true,
 	}
 );
-
-export const BlogModel = mongoose.model<Blog>("Blog", BlogSchema);
