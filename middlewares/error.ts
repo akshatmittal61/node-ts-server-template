@@ -1,8 +1,8 @@
+import { HTTP } from "@/constants";
+import { ApiError, DbConnectionError, ParserSafetyError } from "@/errors";
+import { Logger } from "@/log";
+import { ApiRequest, ApiResponse } from "@/types";
 import { NextFunction } from "express";
-import { HTTP } from "../constants";
-import { ApiError, DbConnectionError, ParserSafetyError } from "../errors";
-import { ApiRequest, ApiResponse } from "../types";
-import { Logger } from "../log";
 
 export const errorHandler = (
 	error: any,

@@ -1,4 +1,4 @@
-import { Blog, User } from "../types";
+import { Blog, User } from "@/types";
 import { ModelFactory } from "./base";
 import { BlogSchema } from "./Blog.model";
 import { UserSchema } from "./User.model";

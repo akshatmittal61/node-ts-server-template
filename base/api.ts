@@ -1,6 +1,6 @@
-import { HTTP } from "../constants";
-import { Logger } from "../log";
-import { ApiRes, ApiResponse, Cookie } from "../types";
+import { HTTP } from "@/constants";
+import { Logger } from "@/log";
+import { ApiRes, ApiResponse, Cookie } from "@/types";
 
 abstract class ApiBaseResponse<T> {
 	protected res: ApiResponse;

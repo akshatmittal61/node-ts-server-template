@@ -1,19 +1,14 @@
-import { ApiFailure, ApiSuccess } from "../base";
-import { BLOG_STATUS, HTTP } from "../constants";
-import { BlogService } from "../services";
+import { ApiFailure, ApiSuccess } from "@/base";
+import { BLOG_STATUS, HTTP } from "@/constants";
+import { BlogService } from "@/services";
 import {
 	ApiRequest,
 	ApiResponse,
 	ApiResponses,
 	Blog,
 	T_BLOG_STATUS,
-} from "../types";
-import {
-	genericParse,
-	getNonEmptyString,
-	getString,
-	safeParse,
-} from "../utils";
+} from "@/types";
+import { genericParse, getNonEmptyString, getString, safeParse } from "@/utils";
 
 export class BlogsController {
 	public static async getAllBlogs(_: ApiRequest, res: ApiResponse) {

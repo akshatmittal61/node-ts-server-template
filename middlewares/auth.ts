@@ -1,8 +1,8 @@
+import { HTTP } from "@/constants";
+import { Logger } from "@/log";
+import { AuthService } from "@/services";
+import { ApiRequest, ApiResponse } from "@/types";
 import { NextFunction } from "express";
-import { HTTP } from "../constants";
-import { Logger } from "../log";
-import { AuthService } from "../services";
-import { ApiRequest, ApiResponse } from "../types";
 
 export const authenticatedRoute = async (
 	req: ApiRequest,

@@ -1,8 +1,8 @@
-import { Cache } from "../cache";
-import { BLOG_STATUS, cacheParameter, HTTP } from "../constants";
-import { ApiError } from "../errors";
-import { blogRepo } from "../repo";
-import { Blog, CreateModel, IBlog } from "../types";
+import { Cache } from "@/cache";
+import { BLOG_STATUS, cacheParameter, HTTP } from "@/constants";
+import { ApiError } from "@/errors";
+import { blogRepo } from "@/repo";
+import { Blog, CreateModel, IBlog } from "@/types";
 import { UserService } from "./user.service";
 
 export class BlogService {

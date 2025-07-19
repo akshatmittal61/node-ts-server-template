@@ -1,4 +1,4 @@
-import { BlogModel } from "../models";
+import { BlogModel } from "@/models";
 import {
 	Blog,
 	CreateModel,
@@ -6,8 +6,8 @@ import {
 	IBlog,
 	UpdateQuery,
 	User,
-} from "../types";
-import { getNonNullValue, getObjectFromMongoResponse } from "../utils";
+} from "@/types";
+import { getNonNullValue, getObjectFromMongoResponse } from "@/utils";
 import { BaseRepo } from "./base";
 
 class BlogRepo extends BaseRepo<Blog, IBlog> {

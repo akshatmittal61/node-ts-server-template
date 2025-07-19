@@ -1,15 +1,16 @@
-import { ApiSuccess } from "../base";
-import { DatabaseManager } from "../connections";
-import { HTTP } from "../constants";
-import { ApiRequest, ApiResponse } from "../types";
+import { ApiFailure, ApiSuccess } from "@/base";
+import { DatabaseManager } from "@/connections";
+import { HTTP } from "@/constants";
+import { ApiRequest, ApiResponse } from "@/types";
 
 export class ServerController {
 	public static health =
 		(db: DatabaseManager) => (_: ApiRequest, res: ApiResponse) => {
 			if (db.isConnected() === false) {
-				return res
+				return new ApiFailure(res)
 					.status(HTTP.status.SERVICE_UNAVAILABLE)
-					.json({ message: HTTP.message.DB_CONNECTION_ERROR });
+					.message(HTTP.message.DB_CONNECTION_ERROR)
+					.send();
 			}
 			const payload = {
 				identity: process.pid,

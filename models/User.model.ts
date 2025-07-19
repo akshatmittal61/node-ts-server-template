@@ -1,5 +1,5 @@
+import { USER_ROLE, USER_STATUS } from "@/constants";
 import mongoose from "mongoose";
-import { USER_ROLE, USER_STATUS } from "../constants";
 
 export const UserSchema = new mongoose.Schema(
 	{

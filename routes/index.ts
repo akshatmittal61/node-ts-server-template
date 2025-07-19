@@ -1,5 +1,5 @@
-import { BlogsController } from "../controllers";
-import { authenticatedRoute } from "../middlewares";
+import { BlogsController } from "@/controllers";
+import { authenticatedRoute } from "@/middlewares";
 import { router, wrapper } from "./base";
 
 router.get("/blogs", BlogsController.getAllBlogs);

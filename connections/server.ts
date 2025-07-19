@@ -1,8 +1,6 @@
-import express from "express";
-import { Server as HttpServer } from "http";
-import { ServerController } from "../controllers";
-import { createDbContainer } from "../db";
-import { Logger } from "../log";
+import { ServerController } from "@/controllers";
+import { createDbContainer } from "@/db";
+import { Logger } from "@/log";
 import {
 	cors,
 	errorHandler,
@@ -10,8 +8,10 @@ import {
 	profiler,
 	tracer,
 	useDb,
-} from "../middlewares";
-import { apiRouter } from "../routes";
+} from "@/middlewares";
+import { apiRouter } from "@/routes";
+import express from "express";
+import { Server as HttpServer } from "http";
 
 export class Server {
 	private app = express();

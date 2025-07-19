@@ -1,12 +1,12 @@
-import NodeCache from "node-cache";
 import {
 	cacheParameter,
 	CHECK_INTERVAL,
 	MAX_KEYS,
 	TTL_SECONDS,
-} from "../constants";
-import { Logger } from "../log";
-import { CacheParameter, CachePayloadGenerator } from "../types";
+} from "@/constants";
+import { Logger } from "@/log";
+import { CacheParameter, CachePayloadGenerator } from "@/types";
+import NodeCache from "node-cache";
 
 class CacheService {
 	private cache: NodeCache;

@@ -1,5 +1,5 @@
+import { User } from "@/types/models";
 import { Request, Response } from "express";
-import { User } from "../models";
 
 export * as ApiRequests from "./requests";
 export * as ApiResponses from "./responses";

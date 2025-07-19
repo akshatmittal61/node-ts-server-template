@@ -1,4 +1,4 @@
-import { IBlog } from "../client";
+import { IBlog } from "@/types";
 
 // Blog
 export type GetAllBlogs = Array<IBlog>;

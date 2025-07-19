@@ -1,8 +1,8 @@
-import { Cache } from "../cache";
-import { cacheParameter, HTTP } from "../constants";
-import { ApiError } from "../errors";
-import { userRepo } from "../repo";
-import { CreateModel, User } from "../types";
+import { Cache } from "@/cache";
+import { cacheParameter, HTTP } from "@/constants";
+import { ApiError } from "@/errors";
+import { userRepo } from "@/repo";
+import { CreateModel, User } from "@/types";
 
 export class UserService {
 	public static async getUserById(id: string): Promise<User | null> {

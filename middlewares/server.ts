@@ -1,9 +1,9 @@
+import { DatabaseManager } from "@/connections";
+import { HTTP } from "@/constants";
+import { Logger } from "@/log";
+import { ApiRequest, ApiResponse } from "@/types";
 import { default as corsMiddleware } from "cors";
 import { NextFunction } from "express";
-import { DatabaseManager } from "../connections";
-import { HTTP } from "../constants";
-import { Logger } from "../log";
-import { ApiRequest, ApiResponse } from "../types";
 
 export const parseCookies = (
 	req: ApiRequest,

@@ -1,4 +1,4 @@
-import { DatabaseManager } from "../connections";
+import { DatabaseManager } from "@/connections";
 
 export interface DatabaseManagerConfig {
 	uri: string;

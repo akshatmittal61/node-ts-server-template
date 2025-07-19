@@ -1,9 +1,9 @@
+import { jwtSecret } from "@/config";
+import { Logger } from "@/log";
+import { User } from "@/types";
+import { genericParse, getNonEmptyString } from "@/utils";
 import jwt from "jsonwebtoken";
-import { jwtSecret } from "../config";
-import { User } from "../types";
-import { genericParse, getNonEmptyString } from "../utils";
 import { UserService } from "./user.service";
-import { Logger } from "../log";
 
 export class AuthService {
 	public static async getAuthenticatedUser(

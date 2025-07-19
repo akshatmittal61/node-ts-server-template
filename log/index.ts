@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
+import { enableDebugLogs, nodeEnv } from "@/config";
+import { logsBaseUrl, NODE_ENV, serviceName } from "@/constants";
 import fs from "fs";
-import { enableDebugLogs, nodeEnv } from "../config";
-import { logsBaseUrl, NODE_ENV, serviceName } from "../constants";
 
 type LOG_LEVEL =
 	| "log"

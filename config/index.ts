@@ -1,4 +1,4 @@
-import { T_NODE_ENV } from "../types";
+import { T_NODE_ENV } from "@/types";
 import { config } from "./base";
 
 export const service = config.safeGet<string>("SERVICE", "template");

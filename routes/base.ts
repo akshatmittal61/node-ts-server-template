@@ -1,5 +1,5 @@
+import { ApiRequest, ApiResponse } from "@/types";
 import { NextFunction, Router } from "express";
-import { ApiRequest, ApiResponse } from "../types";
 
 export const router = Router();
 

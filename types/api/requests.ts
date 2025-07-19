@@ -1,5 +1,4 @@
-import { Blog } from "../models";
-import { CreateModel, UpdateModel } from "../parser";
+import { Blog, CreateModel, UpdateModel } from "@/types";
 
 // Blog
 export type CreateBlog = CreateModel<Blog>;

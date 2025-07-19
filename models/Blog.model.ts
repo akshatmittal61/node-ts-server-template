@@ -1,5 +1,5 @@
+import { BLOG_STATUS } from "@/constants";
 import mongoose from "mongoose";
-import { BLOG_STATUS } from "../constants";
 
 export const BlogSchema = new mongoose.Schema(
 	{
