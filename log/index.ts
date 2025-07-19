@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import fs from "fs";
-import { nodeEnv } from "../config";
+import { enableDebugLogs, nodeEnv } from "../config";
 import { logsBaseUrl, NODE_ENV, serviceName } from "../constants";
 
 type LOG_LEVEL =
@@ -120,22 +120,27 @@ export class Logger {
 	}
 
 	public static debug(...messages: Array<any>) {
+		if (!enableDebugLogs) return;
 		Logger.logMessages("debug", messages);
 	}
 
 	public static verbose(...messages: Array<any>) {
+		if (!enableDebugLogs) return;
 		Logger.logMessages("verbose", messages);
 	}
 
 	public static silly(...messages: Array<any>) {
+		if (!enableDebugLogs) return;
 		Logger.logMessages("silly", messages);
 	}
 
 	public static http(...messages: Array<any>) {
+		if (!enableDebugLogs) return;
 		Logger.logMessages("http", messages);
 	}
 
 	public static log(...messages: Array<any>) {
+		if (!enableDebugLogs) return;
 		Logger.logMessages("log", messages);
 	}
 }
