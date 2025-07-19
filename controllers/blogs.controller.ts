@@ -1,6 +1,13 @@
+import { ApiFailure, ApiSuccess } from "../base";
 import { BLOG_STATUS, HTTP } from "../constants";
 import { BlogService } from "../services";
-import { ApiRequest, ApiResponse, Blog, T_BLOG_STATUS } from "../types";
+import {
+	ApiRequest,
+	ApiResponse,
+	ApiResponses,
+	Blog,
+	T_BLOG_STATUS,
+} from "../types";
 import {
 	genericParse,
 	getNonEmptyString,
@@ -10,23 +17,24 @@ import {
 
 export class BlogsController {
 	public static async getAllBlogs(_: ApiRequest, res: ApiResponse) {
-		const publishedBlogs = BlogService.getAllPublishedBlogs();
-		return res
-			.status(HTTP.status.SUCCESS)
-			.json({ message: HTTP.message.SUCCESS, data: publishedBlogs });
+		const publishedBlogs = await BlogService.getAllPublishedBlogs();
+		return new ApiSuccess<ApiResponses.GetAllBlogs>(res)
+			.data(publishedBlogs)
+			.send();
 	}
 
 	public static async getBlogBySlug(req: ApiRequest, res: ApiResponse) {
 		const slug = getString(req.params.slug);
 		const blog = await BlogService.getBlogBySlug(slug);
 		if (!blog) {
-			return res
+			return new ApiFailure(res)
 				.status(HTTP.status.NOT_FOUND)
-				.json({ message: HTTP.message.NOT_FOUND });
+				.message("Blog not found")
+				.send();
 		}
-		return res
-			.status(HTTP.status.SUCCESS)
-			.json({ message: HTTP.message.SUCCESS, data: blog });
+		return new ApiSuccess<ApiResponses.GetBlogBySlug>(res)
+			.data(blog)
+			.send();
 	}
 
 	public static async createBlog(req: ApiRequest, res: ApiResponse) {
@@ -44,9 +52,10 @@ export class BlogsController {
 			author,
 			status,
 		});
-		return res
+		return new ApiSuccess<ApiResponses.CreateBlog>(res)
 			.status(HTTP.status.CREATED)
-			.json({ message: HTTP.message.SUCCESS, data: blog });
+			.data(blog)
+			.send();
 	}
 
 	public static async updateBlog(req: ApiRequest, res: ApiResponse) {
@@ -64,17 +73,22 @@ export class BlogsController {
 			currentUserId,
 			body,
 		});
-		return res
-			.status(HTTP.status.SUCCESS)
-			.json({ message: HTTP.message.SUCCESS, data: blog });
+		return new ApiSuccess<ApiResponses.UpdateBlog>(res).data(blog).send();
 	}
 
 	public static async removeBlog(req: ApiRequest, res: ApiResponse) {
 		const blogId = genericParse(getNonEmptyString, req.params.id);
 		const currentUserId = genericParse(getNonEmptyString, req.user?.id);
 		const blog = await BlogService.removeBlog({ blogId, currentUserId });
-		return res
+		if (!blog) {
+			return new ApiFailure(res)
+				.status(HTTP.status.NOT_FOUND)
+				.message("Blog not found")
+				.send();
+		}
+		return new ApiSuccess<ApiResponses.DeleteBlog>(res)
 			.status(HTTP.status.REMOVED)
-			.json({ message: HTTP.message.SUCCESS, data: blog });
+			.data(blog)
+			.send();
 	}
 }

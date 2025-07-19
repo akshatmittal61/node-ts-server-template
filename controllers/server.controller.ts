@@ -1,3 +1,4 @@
+import { ApiSuccess } from "../base";
 import { DatabaseManager } from "../connections";
 import { HTTP } from "../constants";
 import { ApiRequest, ApiResponse } from "../types";
@@ -16,9 +17,10 @@ export class ServerController {
 				timestamp: new Date().toISOString(),
 				database: db.isConnected(),
 			};
-			return res
-				.status(HTTP.status.SUCCESS)
-				.json({ message: HTTP.message.HEALTHY_API, data: payload });
+			return new ApiSuccess(res)
+				.message(HTTP.message.HEALTHY_API)
+				.data(payload)
+				.send();
 		};
 	public static heartbeat =
 		(db: DatabaseManager) => (_: ApiRequest, res: ApiResponse) => {
@@ -28,8 +30,9 @@ export class ServerController {
 				timestamp: new Date().toISOString(),
 				database: db.isConnected(),
 			};
-			return res
-				.status(HTTP.status.SUCCESS)
-				.json({ message: HTTP.message.HEARTBEAT, data: payload });
+			return new ApiSuccess(res)
+				.message(HTTP.message.HEARTBEAT)
+				.data(payload)
+				.send();
 		};
 }
