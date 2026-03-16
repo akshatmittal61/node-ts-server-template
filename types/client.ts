@@ -1,4 +1,4 @@
-import { Blog, User } from "./models";
+import { Blog, User } from "./schema";
 
 // Types prefixed with `I` are client-specific models
 

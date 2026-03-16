@@ -1,3 +1,10 @@
+/**
+ * Converts a MongoDB response to a plain JavaScript object.
+ * This function is used to convert the response from a MongoDB query
+ * to a plain JavaScript object that can be used by the application.
+ * @param {any} response The response from a MongoDB query.
+ * @returns {T | null} The converted object, or null if the response is null or undefined.
+ */
 export const getObjectFromMongoResponse = <T>(response: any): T | null => {
 	if (response === null || response === undefined) {
 		return null;
