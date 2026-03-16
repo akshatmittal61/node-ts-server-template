@@ -1,14 +1,16 @@
-import { Cache } from "@/cache";
-import { cacheParameter, HTTP } from "@/constants";
+import { HTTP } from "@/constants";
 import { ApiError } from "@/errors";
 import { userRepo } from "@/repo";
 import { CreateModel, User } from "@/types";
+import { CacheService } from "./cache.service";
 
 export class UserService {
 	public static async getUserById(id: string): Promise<User | null> {
-		const cacheKey = Cache.getKey(cacheParameter.USER, { id });
-		return await Cache.fetch(cacheKey, () => userRepo.findById(id));
+		return await CacheService.fetchUser({ id }, () =>
+			userRepo.findById(id)
+		);
 	}
+
 	public static async findOrCreateUserByEmail(
 		email: string,
 		body: CreateModel<User>
@@ -20,6 +22,7 @@ export class UserService {
 		const createdUser = await userRepo.create(body);
 		return { user: createdUser, isNew: true };
 	}
+
 	public static async searchByEmail(
 		emailQuery: string
 	): Promise<Array<User>> {

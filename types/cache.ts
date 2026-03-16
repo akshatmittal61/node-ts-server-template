@@ -1,6 +1,9 @@
 export type CacheParameter = "USER" | "BLOG";
-export type CachePayloadGenerator<T extends CacheParameter> = T extends "USER"
-	? { id: string }
-	: T extends "BLOG"
-		? { id: string }
-		: never;
+
+type CachePayloadMap = {
+	USER: { id: string } | { email: string };
+	BLOG: { id: string };
+};
+
+export type CachePayloadGenerator<T extends CacheParameter> =
+	CachePayloadMap[T];

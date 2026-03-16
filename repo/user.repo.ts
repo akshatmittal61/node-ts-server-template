@@ -1,8 +1,8 @@
 import { UserModel } from "@/models";
-import { User } from "@/types";
+import { IUser, User } from "@/types";
 import { BaseRepo } from "./base";
 
-class UserRepo extends BaseRepo<User> {
+class UserRepo extends BaseRepo<User, IUser> {
 	protected model = UserModel;
 }
 
