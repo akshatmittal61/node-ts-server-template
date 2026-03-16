@@ -19,6 +19,7 @@ export class AuthService {
 			return null;
 		}
 	}
+
 	public static generateToken(id: string): string {
 		return jwt.sign({ id }, jwtSecret, {
 			expiresIn: "30d",
