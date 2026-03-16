@@ -1,14 +1,7 @@
 import { ServerController } from "@/controllers";
 import { createDbContainer } from "@/db";
 import { Logger } from "@/log";
-import {
-	cors,
-	errorHandler,
-	parseCookies,
-	profiler,
-	tracer,
-	useDb,
-} from "@/middlewares";
+import { ErrorHandler, ServerMiddleware } from "@/middlewares";
 import { apiRouter } from "@/routes";
 import express from "express";
 import { Server as HttpServer } from "http";
@@ -28,10 +21,10 @@ export class Server {
 	private bindMiddlewares() {
 		this.app.use(express.json());
 		this.app.use(express.urlencoded({ extended: true }));
-		this.app.use(tracer);
-		this.app.use(cors);
-		this.app.use(parseCookies);
-		this.app.use(profiler);
+		this.app.use(ServerMiddleware.tracer);
+		this.app.use(ServerMiddleware.cors);
+		this.app.use(ServerMiddleware.parseCookies);
+		this.app.use(ServerMiddleware.profiler);
 	}
 
 	private createRouter() {
@@ -40,9 +33,9 @@ export class Server {
 			"/api/heartbeat",
 			ServerController.heartbeat(this.container.db)
 		);
-		this.app.use(useDb(this.container.db));
+		this.app.use(ServerMiddleware.useDb(this.container.db));
 		this.app.use("/api/v1", apiRouter);
-		this.app.use(errorHandler);
+		this.app.use(ErrorHandler.process);
 	}
 
 	public async connectDb() {

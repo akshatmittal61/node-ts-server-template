@@ -90,7 +90,6 @@ class CacheService {
 }
 
 declare global {
-	// eslint-disable-next-line no-var
 	var cache: CacheService;
 }
 
