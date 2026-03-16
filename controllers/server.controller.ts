@@ -1,7 +1,18 @@
 import { ApiFailure, ApiSuccess } from "@/base";
 import { DatabaseManager } from "@/connections";
 import { HTTP } from "@/constants";
-import { ApiRequest, ApiResponse } from "@/types";
+import { ApiRequest, ApiResponse, IUser } from "@/types";
+
+type HealthPayload = {
+	identity: number;
+	uptime: number;
+	timestamp: string;
+	database: boolean;
+};
+
+type HeartbeatPayload = HealthPayload & {
+	user: IUser | null;
+};
 
 export class ServerController {
 	public static health =
@@ -12,26 +23,28 @@ export class ServerController {
 					.message(HTTP.message.DB_CONNECTION_ERROR)
 					.send();
 			}
-			const payload = {
+			const payload: HealthPayload = {
 				identity: process.pid,
 				uptime: process.uptime(),
 				timestamp: new Date().toISOString(),
 				database: db.isConnected(),
 			};
-			return new ApiSuccess(res)
+			return new ApiSuccess<HealthPayload>(res)
 				.message(HTTP.message.HEALTHY_API)
 				.data(payload)
 				.send();
 		};
 	public static heartbeat =
 		(db: DatabaseManager) => (_: ApiRequest, res: ApiResponse) => {
-			const payload = {
+			const payload: HeartbeatPayload = {
 				identity: process.pid,
 				uptime: process.uptime(),
 				timestamp: new Date().toISOString(),
 				database: db.isConnected(),
+				// use auth checker service to populate logged in user details in heartbeat
+				user: null,
 			};
-			return new ApiSuccess(res)
+			return new ApiSuccess<HeartbeatPayload>(res)
 				.message(HTTP.message.HEARTBEAT)
 				.data(payload)
 				.send();

@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { enableDebugLogs, nodeEnv } from "@/config";
+import { enableDebugging, nodeEnv } from "@/config";
 import { logsBaseUrl, NODE_ENV, serviceName } from "@/constants";
 import fs from "fs";
 
@@ -63,13 +63,13 @@ export class Logger {
 	}
 	private static getMessage(...messages: Array<any>): string {
 		const message = messages
-			.map((m) =>
-				typeof m === "string"
-					? `"${m}"`
-					: typeof m === "object"
-						? JSON.stringify(m)
-						: m
-			)
+			.map((m) => {
+				if (m === null) return "null";
+				if (m === undefined) return "undefined";
+				if (typeof m === "string") return `"${m}"`;
+				if (typeof m === "object") return JSON.stringify(m);
+				else return m;
+			})
 			.map((m) => m.toString());
 		return `${message}`;
 	}
@@ -78,8 +78,7 @@ export class Logger {
 		const logLevel = Logger.getLevel(level);
 		const message = Logger.getMessage(...messages);
 		const service = `${serviceName}-${nodeEnv}`;
-		const messageToLog = `[${service}] [${timestamp}] [${logLevel}] [${message}]\n`;
-		return messageToLog;
+		return `[${service}] [${timestamp}] [${logLevel}] [${message}]\n`;
 	}
 	private static writeToFile(log: string) {
 		const dir: string = logsBaseUrl;
@@ -101,6 +100,7 @@ export class Logger {
 	}
 	private static logMessages = (level: LOG_LEVEL, messages: Array<any>) => {
 		const message = Logger.getMessageToLog(level, ...messages);
+		// Don't log in test environment
 		if (nodeEnv !== NODE_ENV.test) {
 			Logger.writeToConsole(level, message);
 			Logger.writeToFile(message);
@@ -120,27 +120,27 @@ export class Logger {
 	}
 
 	public static debug(...messages: Array<any>) {
-		if (!enableDebugLogs) return;
+		if (!enableDebugging) return;
 		Logger.logMessages("debug", messages);
 	}
 
 	public static verbose(...messages: Array<any>) {
-		if (!enableDebugLogs) return;
+		if (!enableDebugging) return;
 		Logger.logMessages("verbose", messages);
 	}
 
 	public static silly(...messages: Array<any>) {
-		if (!enableDebugLogs) return;
+		if (!enableDebugging) return;
 		Logger.logMessages("silly", messages);
 	}
 
 	public static http(...messages: Array<any>) {
-		if (!enableDebugLogs) return;
+		if (!enableDebugging) return;
 		Logger.logMessages("http", messages);
 	}
 
 	public static log(...messages: Array<any>) {
-		if (!enableDebugLogs) return;
+		if (!enableDebugging) return;
 		Logger.logMessages("log", messages);
 	}
 }

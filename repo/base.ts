@@ -1,5 +1,5 @@
 import { CreateModel, FilterQuery, UpdateQuery } from "@/types";
-import { getNonNullValue, getObjectFromMongoResponse } from "@/utils";
+import { getObjectFromMongoResponse, SafetyUtils } from "@/utils";
 import mongoose from "mongoose";
 
 export abstract class BaseRepo<T = any, P = T> {
@@ -10,7 +10,8 @@ export abstract class BaseRepo<T = any, P = T> {
 	 * This allows for singleton-like behavior, ensuring that only one
 	 * instance of each repository class is created.
 	 */
-	private static _instances = new Map<new () => BaseRepo<any>, any>();
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+	private static _instances = new Map<Function, any>();
 
 	/**
 	 * Get an instance of the repository class.
@@ -101,7 +102,7 @@ export abstract class BaseRepo<T = any, P = T> {
 	 */
 	public async create(body: CreateModel<T>): Promise<P> {
 		const res = await this.model.create<CreateModel<T>>(body);
-		return getNonNullValue(this.parser(res));
+		return SafetyUtils.getNonNullValue(this.parser(res));
 	}
 
 	/**
